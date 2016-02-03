@@ -32,6 +32,8 @@ public class PhraseDAO {
 
         boolean isSuccessful = validateStatus(operationStatus);
 
+        Log.d(getClass().getSimpleName(), "Insert return: " + operationStatus);
+
         return isSuccessful;
     }
 

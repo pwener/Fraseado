@@ -12,7 +12,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "fraseado";
 
     private static final String PHRASE_TABLE_CREATE = "CREATE TABLE " + Phrase.tableName() + "(" +
-            "ID PRIMARY KEY AUTOINCREMENT, " +
+            "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "CONTENT TEXT, " +
             "INITIAL_DATE DATETIME DEFAULT CURRENT_TIMESTAMP, " +
             "LAST_EDIT_DATE DATETIME);";
