@@ -13,6 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import wener.net.fraseado.dao.PhraseDAO;
 import wener.net.fraseado.model.Phrase;
 
@@ -44,15 +48,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // @UNUSED
         progressSaveView = findViewById(R.id.save_progress);
 
-        String[] values = {"HELLO", "WORLD", "LOREM", "IPSUM"};
+        List<String> phrases = loadPhrases();
 
-        // Creating adapter
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_listview, values);
+        // Creating adapter to list into view
+        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_listview, phrases);
 
         listPhraseView = (ListView) findViewById(R.id.listPhraseView);
         listPhraseView.setAdapter(adapter);
+    }
+
+    /**
+     * Select all phrases in database
+     *
+     * @return ArrayList<String> with content of phrases
+     */
+    private List<String> loadPhrases() {
+        PhraseDAO phraseDAO = new PhraseDAO(this.getApplication());
+
+        List<Phrase> phrases = phraseDAO.selectAll();
+        List<String> phrasesContent = new ArrayList<String>();
+
+        for(Phrase p : phrases) {
+            phrasesContent.add(p.getContent());
+        }
+
+        Log.d(toString(), "Load " + phrasesContent.size() + " phrases...");
+
+        return phrasesContent;
     }
 
     /**
