@@ -39,4 +39,11 @@ public class Phrase {
     public void setLastEditDate(Date lastEditDate) {
         this.lastEditDate = lastEditDate;
     }
+
+    /**
+     * Return class name with UpperCase format
+     */
+    public static String tableName() {
+        return Phrase.class.getSimpleName().toUpperCase();
+    }
 }
