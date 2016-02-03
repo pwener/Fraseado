@@ -1,5 +1,8 @@
 package wener.net.fraseado;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,14 +13,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
+import wener.net.fraseado.dao.PhraseDAO;
 import wener.net.fraseado.model.Phrase;
 
+/**
+ * Main page is where insert and show phrases
+ *
+ */
 public class MainActivity extends AppCompatActivity {
 
     private SavePhraseTask mSaveTask = null;
 
     private EditText phraseView;
+    private View progressSaveView;
+    private ListView listPhraseView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
                 savePhrase();
             }
         });
+
+        progressSaveView = findViewById(R.id.save_progress);
+        listPhraseView = (ListView) findViewById(R.id.listPhraseView);
     }
 
     /**
@@ -52,14 +66,14 @@ public class MainActivity extends AppCompatActivity {
 
         String phrase = phraseView.getText().toString();
 
+        Log.i(toString(), "Phrase are: " + phrase);
+
         if(!isValid(phrase)) {
             phraseView.requestFocus();
         } else {
             mSaveTask = new SavePhraseTask(this.getApplicationContext(), phrase);
             mSaveTask.execute((Void) null);
         }
-
-        Log.i(toString(), "Phrase are: " + phrase);
     }
 
     /**
@@ -83,5 +97,46 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public String toString() {
         return MainActivity.class.getSimpleName();
+    }
+
+
+    private class SavePhraseTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String phraseContent;
+        private final Context context;
+
+        SavePhraseTask(Context context, String phrase) {
+            this.phraseContent = phrase;
+            this.context = context;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            PhraseDAO phraseDAO = new PhraseDAO(context);
+
+            Phrase phrase = new Phrase();
+            phrase.setContent(phraseContent);
+
+            phraseDAO.insert(phrase);
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            finish();
+            reloadActivity();
+        }
+
+        /**
+         * Reload current activity.
+         */
+        private void reloadActivity() {
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, MainActivity.class);
+
+            startActivity(intent);
+        }
     }
 }

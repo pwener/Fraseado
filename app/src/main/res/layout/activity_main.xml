@@ -11,9 +11,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="wener.net.fraseado.MainActivity">
 
+    <!-- When a new phrase was added -->
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/save_progress"
+        android:visibility="gone" />
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="145dp"
         android:id="@+id/phrase_form">
 
         <LinearLayout
@@ -44,5 +52,17 @@
                 android:text="Save"
                 android:textStyle="bold" />
         </LinearLayout>
+    </ScrollView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView"
+        android:layout_gravity="center_horizontal" >
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listPhraseView" />
     </ScrollView>
 </LinearLayout>
