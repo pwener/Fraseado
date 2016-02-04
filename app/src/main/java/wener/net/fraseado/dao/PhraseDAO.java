@@ -19,21 +19,23 @@ import wener.net.fraseado.model.Phrase;
 public class PhraseDAO {
     private final Context context;
 
+    private static final String WHERE_ID_CLAUSE = "ID = ?";
     private static final long UNSUCCESSFUL_INSERT = -1;
+    private static final long UNSUCCESSFUL_DELETE = 0;
 
     public PhraseDAO(Context context){
         this.context = context;
     }
 
     public boolean insert(Phrase phrase) {
-        SQLiteDatabase sqlite = new DatabaseHelper(context).getWritableDatabase();
+        SQLiteDatabase db = new DatabaseHelper(context).getWritableDatabase();
 
         ContentValues content = new ContentValues();
         content.put("CONTENT", phrase.getContent());
 
-        long operationStatus = sqlite.insert(Phrase.tableName(), null, content);
+        long operationStatus = db.insert(Phrase.tableName(), null, content);
 
-        boolean isSuccessful = validateStatus(operationStatus);
+        boolean isSuccessful = hasInserted(operationStatus);
 
         Log.d(getClass().getSimpleName(), "Insert return: " + operationStatus);
 
@@ -63,6 +65,23 @@ public class PhraseDAO {
         Log.d(getClass().getSimpleName(), "Size of return: " + phrases.size());
 
         return  phrases;
+    }
+
+    /**
+     * Delete from the id
+     *
+     * @return false if do not have any result
+     */
+    public boolean delete(Long id) {
+        SQLiteDatabase db = new DatabaseHelper(context).getWritableDatabase();
+
+        String [] args = new String[]{id.toString()};
+
+        int operationStatus = db.delete(Phrase.tableName(), WHERE_ID_CLAUSE, args);
+
+        Log.i(getClass().getSimpleName(), operationStatus + " has been removed!");
+
+        return hasRemoved(operationStatus);
     }
 
     /**
@@ -106,7 +125,7 @@ public class PhraseDAO {
      * @param initialDateStr full date information
      * @return Date object
      */
-    private Date formatDate(String initialDateStr) {
+    private Date formatDate(final String initialDateStr) {
         Log.d(toString(), "Started in " + initialDateStr);
 
         Date date = null;
@@ -123,17 +142,33 @@ public class PhraseDAO {
     }
 
     /**
+     * Used into delete operation
+     *
+     * @param operationStatus returned when db try delete
+     */
+    private boolean hasRemoved(final int operationStatus) {
+        boolean removed = false;
+
+        if(operationStatus != UNSUCCESSFUL_DELETE) {
+            removed = true;
+        }
+
+        return removed;
+    }
+
+    /**
      * Used into insert
+     *
      * @param operationStatus is returned value when db insert something
      */
-    private boolean validateStatus(long operationStatus) {
-        boolean valid = false;
+    private boolean hasInserted(final long operationStatus) {
+        boolean isInserted = false;
 
         // if operation not equals to -1, so is valid!
         if(operationStatus != UNSUCCESSFUL_INSERT){
-            valid = true;
+            isInserted = true;
         }
 
-        return  valid;
+        return  isInserted;
     }
 }

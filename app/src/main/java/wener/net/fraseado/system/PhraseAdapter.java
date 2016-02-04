@@ -52,7 +52,8 @@ public class PhraseAdapter extends ArrayAdapter<Phrase> {
     private String getTimePass(Date initialDate) {
         long now = System.currentTimeMillis();
 
-        String relativeTime = DateUtils.getRelativeTimeSpanString(initialDate.getTime(), now, DateUtils.SECOND_IN_MILLIS).toString();
+        String relativeTime = DateUtils.getRelativeTimeSpanString(initialDate.getTime(), now,
+                DateUtils.SECOND_IN_MILLIS).toString();
 
         Log.d(this.getClass().getSimpleName(), "Posted on " + relativeTime);
 
