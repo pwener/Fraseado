@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,13 +77,22 @@ public class PhraseDAO {
         if (cursor.moveToFirst()) {
             do {
                 Phrase phrase = new Phrase();
-
+                // set id
                 int idIndex = cursor.getColumnIndex("ID");
                 phrase.setContent(cursor.getString(idIndex));
 
+                // set content
                 int contentIndex = cursor.getColumnIndex("CONTENT");
                 phrase.setContent(cursor.getString(contentIndex));
 
+                // set creational date
+                int initialDate = cursor.getColumnIndex("INITIAL_DATE");
+                // get date in string
+                String initialDateStr = cursor.getString(initialDate);
+                // convert to util.Date
+                phrase.setInitialDate(formatDate(initialDateStr));
+
+                // add to list
                 phrases.add(phrase);
             } while (cursor.moveToNext());
         }
@@ -88,6 +100,32 @@ public class PhraseDAO {
         return phrases;
     }
 
+    /**
+     * Format date getted from db with string
+     *
+     * @param initialDateStr full date information
+     * @return Date object
+     */
+    private Date formatDate(String initialDateStr) {
+        Log.d(toString(), "Started in " + initialDateStr);
+
+        Date date = null;
+
+        DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        try {
+            date = formatDate.parse(initialDateStr);
+        } catch (ParseException exception) {
+            exception.printStackTrace();
+        }
+
+        return date;
+    }
+
+    /**
+     * Used into insert
+     * @param operationStatus is returned value when db insert something
+     */
     private boolean validateStatus(long operationStatus) {
         boolean valid = false;
 

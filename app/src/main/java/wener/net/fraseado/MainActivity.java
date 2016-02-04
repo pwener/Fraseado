@@ -19,6 +19,7 @@ import java.util.List;
 
 import wener.net.fraseado.dao.PhraseDAO;
 import wener.net.fraseado.model.Phrase;
+import wener.net.fraseado.system.PhraseAdapter;
 
 /**
  * Main page is where insert and show phrases
@@ -51,10 +52,10 @@ public class MainActivity extends AppCompatActivity {
         // @UNUSED
         progressSaveView = findViewById(R.id.save_progress);
 
-        List<String> phrases = loadPhrases();
+        ArrayList<Phrase> phrases = loadPhrases();
 
         // Creating adapter to list into view
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_listview, phrases);
+        PhraseAdapter adapter = new PhraseAdapter(this, phrases);
 
         listPhraseView = (ListView) findViewById(R.id.listPhraseView);
         listPhraseView.setAdapter(adapter);
@@ -63,21 +64,16 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Select all phrases in database
      *
-     * @return ArrayList<String> with content of phrases
+     * @return ArrayList<Phrase> stored
      */
-    private List<String> loadPhrases() {
+    private ArrayList<Phrase> loadPhrases() {
         PhraseDAO phraseDAO = new PhraseDAO(this.getApplication());
 
-        List<Phrase> phrases = phraseDAO.selectAll();
-        List<String> phrasesContent = new ArrayList<String>();
+        ArrayList<Phrase> phrases = (ArrayList<Phrase>) phraseDAO.selectAll();
 
-        for(Phrase p : phrases) {
-            phrasesContent.add(p.getContent());
-        }
+        Log.d(toString(), "Load " + phrases.size() + " phrases...");
 
-        Log.d(toString(), "Load " + phrasesContent.size() + " phrases...");
-
-        return phrasesContent;
+        return phrases;
     }
 
     /**
