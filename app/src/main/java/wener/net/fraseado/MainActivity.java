@@ -80,25 +80,22 @@ public class MainActivity extends AppCompatActivity {
      * Try to save phrase through PhraseDAO
      */
     private void savePhrase() {
-        if(mSaveTask != null) {
-            // Another request of save already was thrown
-            return;
+        if(mSaveTask == null) {
+            // Reset errors.
+            phraseView.setError(null);
+
+            String phrase = phraseView.getText().toString();
+
+            Log.i(toString(), "Phrase are: " + phrase);
+
+            if(!isValid(phrase)) {
+                phraseView.requestFocus();
+            } else {
+                mSaveTask = new SavePhraseTask(this.getApplicationContext(), phrase);
+                mSaveTask.execute((Void) null);
+            }
         } else {
-            // continue
-        }
-
-        // Reset errors.
-        phraseView.setError(null);
-
-        String phrase = phraseView.getText().toString();
-
-        Log.i(toString(), "Phrase are: " + phrase);
-
-        if(!isValid(phrase)) {
-            phraseView.requestFocus();
-        } else {
-            mSaveTask = new SavePhraseTask(this.getApplicationContext(), phrase);
-            mSaveTask.execute((Void) null);
+            // do nothing
         }
     }
 
